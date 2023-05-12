@@ -15,6 +15,10 @@ spec:
     spec:
       containers:
         - name: polar-postgres
+          # if `$ kubectl get pod` see ErrPullImage or ImagePullBackOff ?
+          #  $ minikube -p polar image load postgres:14.4
+          #  $ minikube ssh -p polar
+          #  $ docker images
           image: postgres:14.4
           env:
             - name: POSTGRES_USER

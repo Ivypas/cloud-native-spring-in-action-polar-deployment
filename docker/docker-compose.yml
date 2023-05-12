@@ -5,7 +5,7 @@ services:
     depends_on:
       - polar-postgres
       - config-service
-    image: "catalog-service"
+    image: "ghcr.io/ivypas/catalog-service:latest"
     container_name: "catalog-service"
     ports:
       - 9001:9001
@@ -29,7 +29,7 @@ services:
       - POSTGRES_DB=polardb_catalog
  
   config-service:
-    image: "config-service"
+    image: "ghcr.io/ivypas/config-service:latest"
     container_name: "config-service"
     ports:
       - 8888:8888
