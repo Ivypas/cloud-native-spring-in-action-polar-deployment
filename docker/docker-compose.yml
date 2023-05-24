@@ -1,12 +1,22 @@
 version: "3.8"
 services:
- 
+
+  config-service:
+    # gradle bootBuildImage --imageName local/ivypas/catalog-service:chapter8
+    image: "local/ivypas/config-service:chapter8"
+    container_name: "config-service"
+    restart: always
+    ports:
+      - 8888:8888
+
   catalog-service:
     depends_on:
       - polar-postgres
       - config-service
-    image: "ghcr.io/ivypas/catalog-service:latest"
+    # gradle bootBuildImage --imageName local/ivypas/config-service:chapter8
+    image: "local/ivypas/catalog-service:chapter8"
     container_name: "catalog-service"
+    restart: always
     ports:
       - 9001:9001
       - 8001:8001
@@ -21,6 +31,7 @@ services:
   polar-postgres:
     image: "postgres:14.4"
     container_name: "polar-postgres"
+    restart: always
     ports:
       - 5432:5432
     environment:
@@ -29,9 +40,3 @@ services:
       #- POSTGRES_DB=polardb_catalog
     volumes:
       - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  config-service:
-    image: "ghcr.io/ivypas/config-service:latest"
-    container_name: "config-service"
-    ports:
-      - 8888:8888
