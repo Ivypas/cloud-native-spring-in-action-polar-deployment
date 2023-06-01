@@ -1,33 +1,6 @@
 version: "3.8"
 services:
 
-  config-service:
-    # gradle bootBuildImage --imageName local/ivypas/catalog-service:chapter8
-    image: "local/ivypas/config-service:chapter8"
-    container_name: "config-service"
-    restart: always
-    ports:
-      - 8888:8888
-
-  catalog-service:
-    depends_on:
-      - polar-postgres
-      - config-service
-    # gradle bootBuildImage --imageName local/ivypas/config-service:chapter8
-    image: "local/ivypas/catalog-service:chapter8"
-    container_name: "catalog-service"
-    restart: always
-    ports:
-      - 9001:9001
-      - 8001:8001
-    environment:
-      - BPL_JVM_THREAD_COUNT=50
-      - BPL_DEBUG_ENABLED=true
-      - BPL_DEBUG_PORT=8001
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
-      - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
-      - SPRING_PROFILES_ACTIVE=testdata
- 
   polar-postgres:
     image: "postgres:14.4"
     container_name: "polar-postgres"
@@ -40,3 +13,43 @@ services:
       #- POSTGRES_DB=polardb_catalog
     volumes:
       - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  config-service:
+    # gradle bootBuildImage --imageName local/config-service:chapter9
+    image: "local/ivypas/config-service:chapter9"
+    container_name: "config-service"
+    restart: always
+    ports:
+      - 8888:8888
+
+  catalog-service:
+    depends_on:
+      - polar-postgres
+      - config-service
+    # gradle bootBuildImage --imageName local/catalog-service:chapter9
+    image: "local/ivypas/catalog-service:chapter9"
+    container_name: "catalog-service"
+    restart: always
+    ports:
+      - 9001:9001
+      - 8001:8001
+    environment:
+      - BPL_JVM_THREAD_COUNT=50
+      - BPL_DEBUG_ENABLED=true
+      - BPL_DEBUG_PORT=8001
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://polar-postgres:5432/polardb_catalog
+      - SPRING_CLOUD_CONFIG_URI=http://config-service:8888
+      - SPRING_PROFILES_ACTIVE=testdata
+
+  order-service:
+    # gradle bootBuildImage --imageName local/order-service:chapter9
+    image: "local/ivypas/order-service:chapter9"
+    container_name: "order-service"
+    restart: always
+    ports:
+      - 9002:9002
+      - 8002:8002
+    environment:
+      - POLAR_CATALOG_SERVICE_URI=http://catalog-service:9001
+      - SPRING_R2DBC_URL=r2dbc:postgresql://polar-postgres:5432/polardb_order
+      - SPRING_FLAYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
