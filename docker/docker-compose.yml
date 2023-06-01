@@ -16,7 +16,7 @@ services:
 
   config-service:
     # gradle bootBuildImage --imageName local/config-service:chapter9
-    image: "local/ivypas/config-service:chapter9"
+    image: "config-service"
     container_name: "config-service"
     restart: always
     ports:
@@ -27,7 +27,7 @@ services:
       - polar-postgres
       - config-service
     # gradle bootBuildImage --imageName local/catalog-service:chapter9
-    image: "local/ivypas/catalog-service:chapter9"
+    image: "catalog-service"
     container_name: "catalog-service"
     restart: always
     ports:
@@ -43,7 +43,7 @@ services:
 
   order-service:
     # gradle bootBuildImage --imageName local/order-service:chapter9
-    image: "local/ivypas/order-service:chapter9"
+    image: "order-service"
     container_name: "order-service"
     restart: always
     ports:
@@ -52,4 +52,4 @@ services:
     environment:
       - POLAR_CATALOG_SERVICE_URI=http://catalog-service:9001
       - SPRING_R2DBC_URL=r2dbc:postgresql://polar-postgres:5432/polardb_order
-      - SPRING_FLAYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
+      - SPRING_FLYWAY_URL=jdbc:postgresql://polar-postgres:5432/polardb_order
